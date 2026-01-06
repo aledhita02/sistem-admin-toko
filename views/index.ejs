@@ -1,364 +1,156 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Admin Toko</title>
-    
-    <!-- Materialize CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-    <!-- Material Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <!-- Google Fonts: Poppins -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        :root {
-            --primary-color: #4361ee;
-            --secondary-color: #3f37c9;
-            --bg-color: #f8f9fa;
-            --card-bg: #ffffff;
-            --text-main: #2b2d42;
-            --text-light: #8d99ae;
-        }
+<%- include('partials/header', { title: 'Dashboard - Admin Toko' }) %>
 
-        body {
-            background-color: var(--bg-color);
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-main);
-        }
-
-        /* Navbar Style */
-        nav {
-            background: #ffffff;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.04);
-            height: 70px;
-            line-height: 70px;
-        }
-        nav .brand-logo {
-            color: var(--primary-color) !important;
-            font-weight: 700;
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-        }
-        nav .brand-logo i {
-            margin-right: 10px;
-            font-size: 1.8rem;
-        }
-
-        /* Cards & Panels */
-        .card-panel, .card {
-            border-radius: 16px;
-            border: none;
-            background: var(--card-bg);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-            transition: transform 0.3s ease;
-        }
-        .card-hover:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(67, 97, 238, 0.15);
-        }
-
-        /* Stats Cards */
-        .stat-card {
-            display: flex;
-            align-items: center;
-            padding: 20px;
-        }
-        .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            margin-right: 15px;
-        }
-        .bg-blue-light { background: rgba(67, 97, 238, 0.1); color: var(--primary-color); }
-        .bg-green-light { background: rgba(76, 175, 80, 0.1); color: #4CAF50; }
-        .bg-orange-light { background: rgba(255, 152, 0, 0.1); color: #FF9800; }
-
-        .stat-info h6 { margin: 0; color: var(--text-light); font-size: 0.9rem; font-weight: 500; }
-        .stat-info h4 { margin: 5px 0 0 0; font-size: 1.5rem; font-weight: 700; color: var(--text-main); }
-
-        /* Headers */
-        h5.section-title {
-            font-weight: 600;
-            font-size: 1.2rem;
-            color: var(--text-main);
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-        }
-        h5.section-title i { margin-right: 10px; color: var(--primary-color); }
-
-        /* Forms */
-        .input-field input:focus, .input-field textarea:focus {
-            border-bottom: 2px solid var(--primary-color) !important;
-            box-shadow: none !important;
-        }
-        .input-field input:focus + label, .input-field textarea:focus + label {
-            color: var(--primary-color) !important;
-        }
-        .select-wrapper input.select-dropdown:focus {
-            border-bottom: 2px solid var(--primary-color) !important;
-        }
-
-        /* Buttons */
-        .btn-primary {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: 10px;
-            font-weight: 600;
-            width: 100%;
-            height: 48px;
-            line-height: 48px;
-            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
-            text-transform: none;
-            letter-spacing: 0.5px;
-        }
-        .btn-primary:hover {
-            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
-            background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
-        }
-
-        /* Table */
-        table { border-collapse: separate; border-spacing: 0 10px; }
-        table thead th {
-            border: none;
-            color: var(--text-light);
-            font-weight: 600;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        table tbody tr {
-            background: #fff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-            transition: all 0.2s;
-        }
-        table tbody tr:hover { transform: scale(1.01); background: #fafbff; }
-        table td { border: none; padding: 15px 10px; font-size: 0.95rem; }
-        table td:first-child { border-radius: 10px 0 0 10px; }
-        table td:last-child { border-radius: 0 10px 10px 0; }
-
-        /* Badges */
-        .status-badge {
-            padding: 6px 12px;
-            border-radius: 30px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
-        .status-completed { background: rgba(76, 175, 80, 0.15); color: #2E7D32; }
-        .status-cancelled { background: rgba(244, 67, 54, 0.15); color: #C62828; }
-
-        /* Stock Warning */
-        .stock-badge {
-            padding: 4px 10px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-        .stock-ok { background: #f1f3f5; color: var(--text-main); }
-        .stock-low { background: #ffebee; color: #d32f2f; animation: pulse 2s infinite; }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(211, 47, 47, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(211, 47, 47, 0); }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Navbar -->
-    <nav>
-        <div class="nav-wrapper container">
-            <a href="#" class="brand-logo">
-                <i class="material-icons">analytics</i>
-                PosAdmin
-            </a>
-            <ul id="nav-mobile" class="right hide-on-med-and-down">
-                <li>
-                    <a href="#" class="grey-text text-darken-3" style="display: flex; align-items: center;">
-                        <i class="material-icons left">account_circle</i>
-                        <span style="font-weight: 600; margin-right: 5px;"><%= user ? user.username : 'Admin' %></span>
-                    </a>
-                </li>
-                <li>
-                    <a href="/logout" class="red-text text-darken-2" style="font-weight: 600; display: flex; align-items: center;">
-                        <i class="material-icons left">exit_to_app</i>Logout
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
-    <div class="container" style="margin-top: 40px; margin-bottom: 60px;">
-        
-        <!-- Dashboard Stats Row (Kalkulasi sederhana di view) -->
-        <% 
-            let totalIncome = 0;
-            let totalTransactions = purchases.length;
-            let lowStockCount = products.filter(p => p.quantity < 10).length;
-            purchases.forEach(p => { if(p.status === 'completed') totalIncome += parseFloat(p.total_price); });
-        %>
-        <div class="row">
-            <div class="col s12 m4">
-                <div class="card-panel stat-card card-hover">
-                    <div class="stat-icon bg-blue-light"><i class="material-icons">payments</i></div>
-                    <div class="stat-info">
-                        <h6>Total Pendapatan</h6>
-                        <h4>Rp <%= totalIncome.toLocaleString('id-ID') %></h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col s12 m4">
-                <div class="card-panel stat-card card-hover">
-                    <div class="stat-icon bg-green-light"><i class="material-icons">shopping_bag</i></div>
-                    <div class="stat-info">
-                        <h6>Total Transaksi</h6>
-                        <h4><%= totalTransactions %></h4>
-                    </div>
-                </div>
-            </div>
-            <div class="col s12 m4">
-                <div class="card-panel stat-card card-hover">
-                    <div class="stat-icon bg-orange-light"><i class="material-icons">inventory_2</i></div>
-                    <div class="stat-info">
-                        <h6>Stok Menipis</h6>
-                        <h4 class="<%= lowStockCount > 0 ? 'red-text' : '' %>"><%= lowStockCount %> Item</h4>
-                    </div>
+    <!-- Dashboard Stats Row -->
+    <% 
+        let totalIncome = 0;
+        let totalTransactions = purchases.length;
+        let lowStockCount = products.filter(p => p.quantity < 10).length;
+        purchases.forEach(p => { if(p.status === 'completed') totalIncome += parseFloat(p.total_price); });
+    %>
+    <div class="row">
+        <div class="col s12 m4">
+            <div class="card-panel stat-card card-hover">
+                <div class="stat-icon bg-blue-light"><i class="material-icons">payments</i></div>
+                <div class="stat-info">
+                    <h6>Total Pendapatan</h6>
+                    <h4>Rp <%= totalIncome.toLocaleString('id-ID') %></h4>
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            <!-- KOLOM KIRI: Form & Stok -->
-            <div class="col s12 l4">
-                <!-- Card Input -->
-                <div class="card-panel">
-                    <h5 class="section-title"><i class="material-icons">add_circle</i>Transaksi Baru</h5>
-                    <form action="/buy" method="POST" style="margin-top: 25px;">
-                        <div class="input-field">
-                            <select name="product_id" required>
-                                <option value="" disabled selected>Pilih Produk...</option>
-                                <% products.forEach(product => { %>
-                                    <option value="<%= product.id %>">
-                                        <%= product.name %> (Stok: <%= product.quantity %>)
-                                    </option>
-                                <% }) %>
-                            </select>
-                            <label>Produk</label>
-                        </div>
-
-                        <div class="input-field">
-                            <input id="quantity" name="quantity" type="number" min="1" required>
-                            <label for="quantity">Jumlah Qty</label>
-                        </div>
-
-                        <button class="btn btn-primary waves-effect waves-light" type="submit">
-                            Proses Transaksi <i class="material-icons right">arrow_forward</i>
-                        </button>
-                    </form>
-                </div>
-
-                <!-- Card Stok Mini -->
-                <div class="card-panel" style="max-height: 400px; overflow-y: auto;">
-                    <h5 class="section-title" style="font-size: 1rem;"><i class="material-icons">list</i>Monitor Stok</h5>
-                    <table class="centered">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Sisa</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% products.forEach(product => { %>
-                                <tr>
-                                    <td class="left-align" style="font-weight: 500;"><%= product.name %></td>
-                                    <td>
-                                        <span class="stock-badge <%= product.quantity < 10 ? 'stock-low' : 'stock-ok' %>">
-                                            <%= product.quantity %>
-                                        </span>
-                                    </td>
-                                </tr>
-                            <% }) %>
-                        </tbody>
-                    </table>
+        <div class="col s12 m4">
+            <div class="card-panel stat-card card-hover">
+                <div class="stat-icon bg-green-light"><i class="material-icons">shopping_bag</i></div>
+                <div class="stat-info">
+                    <h6>Total Transaksi</h6>
+                    <h4><%= totalTransactions %></h4>
                 </div>
             </div>
-
-            <!-- KOLOM KANAN: Riwayat Table -->
-            <div class="col s12 l8">
-                <div class="card-panel">
-                    <h5 class="section-title"><i class="material-icons">history</i>Riwayat Transaksi</h5>
-                    
-                    <% if (purchases.length === 0) { %>
-                        <div class="center-align grey-text" style="padding: 40px;">
-                            <i class="material-icons" style="font-size: 4rem; opacity: 0.2;">receipt_long</i>
-                            <p>Belum ada data transaksi.</p>
-                        </div>
-                    <% } else { %>
-                        <div style="overflow-x: auto;">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Produk</th>
-                                        <th class="center-align">Qty</th>
-                                        <th>Total</th>
-                                        <th>Status</th>
-                                        <th>Waktu</th>
-                                        <th class="center-align">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <% purchases.forEach(pur => { %>
-                                        <tr>
-                                            <td style="font-weight: 600; color: var(--text-main);"><%= pur.name %></td>
-                                            <td class="center-align"><%= pur.quantity %></td>
-                                            <td style="font-weight: 600; color: var(--primary-color);">
-                                                Rp <%= pur.total_price.toLocaleString('id-ID') %>
-                                            </td>
-                                            <td>
-                                                <span class="status-badge <%= pur.status === 'completed' ? 'status-completed' : 'status-cancelled' %>">
-                                                    <%= pur.status === 'completed' ? 'Sukses' : 'Batal' %>
-                                                </span>
-                                            </td>
-                                            <td class="grey-text" style="font-size: 0.85rem;">
-                                                <%= new Date(pur.created_at).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}) %>
-                                            </td>
-                                            <td class="center-align">
-                                                <% if(pur.status === 'completed') { %>
-                                                    <form action="/cancel/<%= pur.id %>" method="POST" onsubmit="return confirm('Batalkan transaksi ini? Stok akan dikembalikan.')">
-                                                        <button type="submit" class="btn-floating btn-small waves-effect waves-light white z-depth-1 tooltipped" data-position="left" data-tooltip="Batalkan">
-                                                            <i class="material-icons red-text">close</i>
-                                                        </button>
-                                                    </form>
-                                                <% } else { %>
-                                                    <i class="material-icons grey-text lighten-3" style="font-size: 1.2rem;">block</i>
-                                                <% } %>
-                                            </td>
-                                        </tr>
-                                    <% }) %>
-                                </tbody>
-                            </table>
-                        </div>
-                    <% } %>
+        </div>
+        <div class="col s12 m4">
+            <div class="card-panel stat-card card-hover">
+                <div class="stat-icon bg-orange-light"><i class="material-icons">inventory_2</i></div>
+                <div class="stat-info">
+                    <h6>Stok Menipis</h6>
+                    <h4 class="<%= lowStockCount > 0 ? 'red-text' : '' %>"><%= lowStockCount %> Item</h4>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            M.FormSelect.init(document.querySelectorAll('select'));
-            M.Tooltip.init(document.querySelectorAll('.tooltipped'));
-        });
-    </script>
-</body>
-</html>
+    <div class="row">
+        <!-- KOLOM KIRI: Form & Stok -->
+        <div class="col s12 l4">
+            <!-- Card Input -->
+            <div class="card-panel">
+                <h5 class="section-title"><i class="material-icons">add_circle</i>Transaksi Baru</h5>
+                <form action="/buy" method="POST" style="margin-top: 25px;">
+                    <div class="input-field">
+                        <select name="product_id" required>
+                            <option value="" disabled selected>Pilih Produk...</option>
+                            <% products.forEach(product => { %>
+                                <option value="<%= product.id %>">
+                                    <%= product.name %> (Stok: <%= product.quantity %>)
+                                </option>
+                            <% }) %>
+                        </select>
+                        <label>Produk</label>
+                    </div>
+
+                    <div class="input-field">
+                        <input id="quantity" name="quantity" type="number" min="1" required>
+                        <label for="quantity">Jumlah Qty</label>
+                    </div>
+
+                    <button class="btn btn-primary waves-effect waves-light" type="submit">
+                        Proses Transaksi <i class="material-icons right">arrow_forward</i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Card Stok Mini -->
+            <div class="card-panel" style="max-height: 400px; overflow-y: auto;">
+                <h5 class="section-title" style="font-size: 1rem;"><i class="material-icons">list</i>Monitor Stok</h5>
+                <table class="centered">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Sisa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% products.forEach(product => { %>
+                            <tr>
+                                <td class="left-align" style="font-weight: 500;"><%= product.name %></td>
+                                <td>
+                                    <span class="stock-badge <%= product.quantity < 10 ? 'stock-low' : 'stock-ok' %>">
+                                        <%= product.quantity %>
+                                    </span>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- KOLOM KANAN: Riwayat Table -->
+        <div class="col s12 l8">
+            <div class="card-panel">
+                <h5 class="section-title"><i class="material-icons">history</i>Riwayat Transaksi</h5>
+                
+                <% if (purchases.length === 0) { %>
+                    <div class="center-align grey-text" style="padding: 40px;">
+                        <i class="material-icons" style="font-size: 4rem; opacity: 0.2;">receipt_long</i>
+                        <p>Belum ada data transaksi.</p>
+                    </div>
+                <% } else { %>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Produk</th>
+                                    <th class="center-align">Qty</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    <th>Waktu</th>
+                                    <th class="center-align">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% purchases.forEach(pur => { %>
+                                    <tr>
+                                        <td style="font-weight: 600; color: var(--text-main);"><%= pur.name %></td>
+                                        <td class="center-align"><%= pur.quantity %></td>
+                                        <td style="font-weight: 600; color: var(--primary-color);">
+                                            Rp <%= pur.total_price.toLocaleString('id-ID') %>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge <%= pur.status === 'completed' ? 'status-completed' : 'status-cancelled' %>">
+                                                <%= pur.status === 'completed' ? 'Sukses' : 'Batal' %>
+                                            </span>
+                                        </td>
+                                        <td class="grey-text" style="font-size: 0.85rem;">
+                                            <%= new Date(pur.created_at).toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}) %>
+                                        </td>
+                                        <td class="center-align">
+                                            <% if(pur.status === 'completed') { %>
+                                                <form action="/cancel/<%= pur.id %>" method="POST" onsubmit="return confirm('Batalkan transaksi ini? Stok akan dikembalikan.')">
+                                                    <button type="submit" class="btn-floating btn-small waves-effect waves-light white z-depth-1 tooltipped" data-position="left" data-tooltip="Batalkan">
+                                                        <i class="material-icons red-text">close</i>
+                                                    </button>
+                                                </form>
+                                            <% } else { %>
+                                                <i class="material-icons grey-text lighten-3" style="font-size: 1.2rem;">block</i>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+<%- include('partials/footer') %>
