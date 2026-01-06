@@ -1,0 +1,177 @@
+🛒 Sistem Admin Toko (Simple POS)
+
+Aplikasi web sederhana untuk manajemen toko (Point of Sale) yang dibangun menggunakan Node.js, Express, dan MySQL. Aplikasi ini memungkinkan admin untuk mencatat transaksi pembelian, memonitor stok produk, dan membatalkan transaksi yang salah.
+
+✨ Fitur Utama
+
+Dashboard Interaktif: Ringkasan total pendapatan, jumlah transaksi, dan peringatan stok menipis.
+
+Manajemen Transaksi: Input pembelian produk dengan perhitungan total harga otomatis.
+
+Manajemen Stok Otomatis:
+
+Stok berkurang saat transaksi berhasil.
+
+Stok kembali bertambah (refund) saat transaksi dibatalkan.
+
+Riwayat Transaksi: Melihat log penjualan lengkap dengan status (Sukses/Batal).
+
+Sistem Autentikasi: Login aman menggunakan session untuk Admin.
+
+Desain Modern: Antarmuka bersih menggunakan Material Design (Materialize CSS).
+
+🛠️ Teknologi yang Digunakan
+
+Backend: Node.js, Express.js
+
+Frontend: EJS (Templating Engine), Materialize CSS
+
+Database: MySQL (via XAMPP)
+
+Lainnya: express-session (Login), body-parser
+
+📋 Prasyarat
+
+Pastikan di komputer Anda sudah terinstall:
+
+Node.js (Download di nodejs.org).
+
+XAMPP (Untuk menjalankan database MySQL).
+
+⚙️ Cara Instalasi & Menjalankan
+
+Langkah 1: Persiapan Database
+
+Buka XAMPP Control Panel, nyalakan modul Apache dan MySQL.
+
+Buka browser ke http://localhost/phpmyadmin.
+
+Klik tab SQL dan jalankan perintah berikut untuk membuat database dan akun admin default:
+
+-- 1. Buat Database
+CREATE DATABASE IF NOT EXISTS toko_admin_db;
+USE toko_admin_db;
+
+-- 2. Tabel Produk
+CREATE TABLE IF NOT EXISTS products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL
+);
+
+-- 3. Tabel Stok
+CREATE TABLE IF NOT EXISTS stocks (
+    product_id INT PRIMARY KEY,
+    quantity INT NOT NULL,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+-- 4. Tabel Pembelian
+CREATE TABLE IF NOT EXISTS purchases (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    total_price DECIMAL(15, 2) NOT NULL,
+    status ENUM('completed', 'cancelled') DEFAULT 'completed',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+-- 5. Tabel User (Admin)
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'staff') DEFAULT 'admin'
+);
+
+-- 6. Data Awal (Seeding)
+INSERT INTO products (name, price) VALUES 
+('Kopi Robusta', 15000), ('Susu UHT', 18000), ('Roti Tawar', 12000), ('Teh Kotak', 5000);
+
+INSERT INTO stocks (product_id, quantity) SELECT id, 50 FROM products;
+
+-- Akun Admin Default (Password: admin123)
+INSERT INTO users (username, password, role) VALUES ('admin', 'admin123', 'admin');
+
+
+Langkah 2: Instalasi Kode
+
+Buat folder baru, misal toko-admin.
+
+Buka terminal di dalam folder tersebut.
+
+Inisialisasi proyek dan install library:
+
+npm init -y
+npm install express mysql2 ejs body-parser express-session
+
+
+Pastikan struktur file Anda seperti ini:
+
+toko-admin/
+├── node_modules/
+├── views/
+│   ├── index.ejs   (File Dashboard)
+│   └── login.ejs   (File Login)
+├── server.js       (File Utama Backend)
+└── package.json
+
+
+Langkah 3: Menjalankan Server
+
+Di terminal, jalankan perintah:
+
+node server.js
+
+
+Jika berhasil, akan muncul pesan:
+
+Terhubung ke Database MySQL
+Server berjalan di http://localhost:3000
+
+📖 Cara Menggunakan
+
+Buka browser dan kunjungi http://localhost:3000.
+
+Anda akan diarahkan ke halaman Login.
+
+Masuk dengan akun default:
+
+Username: admin
+
+Password: admin123
+
+Input Transaksi:
+
+Pilih produk dari dropdown.
+
+Masukkan jumlah.
+
+Klik "Proses Transaksi". Stok akan otomatis berkurang.
+
+Batalkan Transaksi:
+
+Lihat tabel "Riwayat Transaksi" di sebelah kanan.
+
+Klik tombol X (Merah) pada transaksi yang ingin dibatalkan.
+
+Status akan berubah menjadi "Batal" dan stok produk akan dikembalikan otomatis.
+
+📂 Struktur Database
+
+users: Menyimpan data login admin.
+
+products: Menyimpan nama dan harga barang.
+
+stocks: Menyimpan jumlah stok barang (berelasi dengan products).
+
+purchases: Menyimpan log transaksi penjualan.
+
+⚠️ Troubleshooting
+
+Error "Failed to lookup view": Pastikan file .ejs Anda berada di dalam folder bernama views.
+
+Error Koneksi Database: Pastikan XAMPP MySQL sudah menyala dan tidak ada password pada user root (default XAMPP). Jika Anda menggunakan password database, edit konfigurasi di server.js.
+
+Dibuat dengan Node.js & Express
